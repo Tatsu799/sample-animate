@@ -16,20 +16,24 @@ stage.addChild(target);
 
 class draggEle {
   ele: createjs.Shape;
-  x: number;
-  y: number;
+  posX: number;
+  posY: number;
+  // x: number = 0;
+  // y: number = 0;
   constructor(x: number, y: number) {
     this.ele = new createjs.Shape();
     this.ele.graphics.beginFill('red').drawRect(0, 0, 100, 100);
     this.ele.setBounds(0, 0, 100, 100);
-    this.x = x;
-    this.y = y;
+    this.posX = x;
+    this.posY = y;
   }
 }
 
 let dragArr: draggEle[] = [];
 for (let i = 0; i < 2; i++) {
   const ele = new draggEle(pos[i].x, pos[i].y);
+  ele.ele.x = pos[i].x;
+  ele.ele.y = pos[i].y;
 
   dragArr.push(ele);
   stage.addChild(ele.ele);
@@ -56,27 +60,27 @@ console.log(dragArr);
 let draggableX = 0;
 let draggableY = 0;
 
-const handleDown = (Ele: createjs.Shape) => {
+const handleDown = (Ele: draggEle) => {
   // const mouseEvent = event as createjs.MouseEvent;
-  draggableX = stage.mouseX - Ele.x;
-  draggableY = stage.mouseY - Ele.y;
+  draggableX = stage.mouseX - Ele.ele.x;
+  draggableY = stage.mouseY - Ele.ele.y;
 };
 
-const handleMove = (Ele: createjs.Shape) => {
+const handleMove = (Ele: draggEle) => {
   // const mouseEvent = event as createjs.MouseEvent;
-  Ele.x = stage.mouseX - draggableX;
-  Ele.y = stage.mouseY - draggableY;
+  Ele.ele.x = stage.mouseX - draggableX;
+  Ele.ele.y = stage.mouseY - draggableY;
   stage.update();
 };
 
-const handleUp = (Ele: createjs.Shape) => {
+const handleUp = (Ele: draggEle) => {
   // const mouseEvent = event as createjs.MouseEvent;
-  const draggableBounds = Ele.getBounds();
+  const draggableBounds = Ele.ele.getBounds();
   const targetBounds = target.getBounds();
 
   if (draggableBounds && targetBounds) {
     // ドラッグ対象のグローバルな位置に対して、境界を考慮
-    const draggableGlobal = Ele.localToGlobal(0, 0);
+    const draggableGlobal = Ele.ele.localToGlobal(0, 0);
     const targetGlobal = target.localToGlobal(0, 0);
 
     // ドロップターゲットにオブジェクトが重なっているかを確認
@@ -87,11 +91,11 @@ const handleUp = (Ele: createjs.Shape) => {
       draggableGlobal.y + draggableBounds.height > targetGlobal.y
     ) {
       // ドロップが成功した場合、ターゲットの中央に配置
-      Ele.x = targetGlobal.x + (targetBounds.width - draggableBounds.width) / 2;
-      Ele.y = targetGlobal.y + (targetBounds.height - draggableBounds.height) / 2;
+      Ele.ele.x = targetGlobal.x + (targetBounds.width - draggableBounds.width) / 2;
+      Ele.ele.y = targetGlobal.y + (targetBounds.height - draggableBounds.height) / 2;
     } else {
-      Ele.x = draggableX;
-      Ele.y = draggableY;
+      Ele.ele.x = Ele.posX;
+      Ele.ele.y = Ele.posY;
     }
   }
   stage.update();
@@ -99,9 +103,9 @@ const handleUp = (Ele: createjs.Shape) => {
 
 const setEvent = () => {
   for (const arr of dragArr) {
-    arr.ele.on('mousedown', () => handleDown(arr.ele));
-    arr.ele.on('pressmove', () => handleMove(arr.ele));
-    arr.ele.on('pressup', () => handleUp(arr.ele));
+    arr.ele.on('mousedown', () => handleDown(arr));
+    arr.ele.on('pressmove', () => handleMove(arr));
+    arr.ele.on('pressup', () => handleUp(arr));
   }
 };
 
