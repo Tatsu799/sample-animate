@@ -1,37 +1,59 @@
 // import { Field } from './field';
 // const field = new Field();
 const pos = [
-  { x: 50, y: 50 },
-  { x: 200, y: 50 },
+  { x: 50, y: 50, num: 0 },
+  { x: 200, y: 50, num: 1 },
 ];
 
 let stage = new createjs.Stage('canvas');
 
-let target = new createjs.Shape();
-target.graphics.beginFill('blue').drawRect(0, 0, 100, 100);
-target.setBounds(0, 0, 100, 100);
-target.x = 200;
-target.y = 200;
-stage.addChild(target);
+// let target = new createjs.Shape();
+// target.graphics.beginFill('blue').drawRect(0, 0, 100, 100);
+// target.setBounds(0, 0, 100, 100);
+// target.x = 200;
+// target.y = 200;
+// stage.addChild(target);
+
+class Target {
+  ele: createjs.Shape;
+  posX: number;
+  posY: number;
+  num: number;
+  constructor(x: number, y: number, num: number) {
+    this.ele = new createjs.Shape();
+    this.ele.graphics.beginFill('blue').drawRect(0, 0, 100, 100);
+    this.ele.setBounds(0, 0, 100, 100);
+    this.posX = x;
+    this.posY = y;
+    this.num = num;
+  }
+}
+
+let target = new Target(200, 200, 1);
+stage.addChild(target.ele);
+target.ele.x = target.posX;
+target.ele.y = target.posY;
 
 class draggEle {
   ele: createjs.Shape;
   posX: number;
   posY: number;
+  num: number;
   // x: number = 0;
   // y: number = 0;
-  constructor(x: number, y: number) {
+  constructor(x: number, y: number, num: number) {
     this.ele = new createjs.Shape();
     this.ele.graphics.beginFill('red').drawRect(0, 0, 100, 100);
     this.ele.setBounds(0, 0, 100, 100);
     this.posX = x;
     this.posY = y;
+    this.num = num;
   }
 }
 
 let dragArr: draggEle[] = [];
 for (let i = 0; i < 2; i++) {
-  const ele = new draggEle(pos[i].x, pos[i].y);
+  const ele = new draggEle(pos[i].x, pos[i].y, pos[i].num);
   ele.ele.x = pos[i].x;
   ele.ele.y = pos[i].y;
 
@@ -76,12 +98,12 @@ const handleMove = (Ele: draggEle) => {
 const handleUp = (Ele: draggEle) => {
   // const mouseEvent = event as createjs.MouseEvent;
   const draggableBounds = Ele.ele.getBounds();
-  const targetBounds = target.getBounds();
+  const targetBounds = target.ele.getBounds();
 
-  if (draggableBounds && targetBounds) {
+  if (draggableBounds && targetBounds && checkAnswer(target, Ele)) {
     // ドラッグ対象のグローバルな位置に対して、境界を考慮
     const draggableGlobal = Ele.ele.localToGlobal(0, 0);
-    const targetGlobal = target.localToGlobal(0, 0);
+    const targetGlobal = target.ele.localToGlobal(0, 0);
 
     // ドロップターゲットにオブジェクトが重なっているかを確認
     if (
@@ -93,12 +115,21 @@ const handleUp = (Ele: draggEle) => {
       // ドロップが成功した場合、ターゲットの中央に配置
       Ele.ele.x = targetGlobal.x + (targetBounds.width - draggableBounds.width) / 2;
       Ele.ele.y = targetGlobal.y + (targetBounds.height - draggableBounds.height) / 2;
+      Ele.ele.mouseEnabled = false;
     } else {
       Ele.ele.x = Ele.posX;
       Ele.ele.y = Ele.posY;
     }
+  } else {
+    Ele.ele.x = Ele.posX;
+    Ele.ele.y = Ele.posY;
   }
   stage.update();
+};
+
+const checkAnswer = (target: Target, dragBox: draggEle): boolean => {
+  if (target.num === dragBox.num) return true;
+  return false;
 };
 
 const setEvent = () => {
