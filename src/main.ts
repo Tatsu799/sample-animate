@@ -23,43 +23,43 @@ let stage = new createjs.Stage('canvas');
 // target.y = 200;
 // stage.addChild(target);
 
-class Target {
-  mc: createjs.Shape;
-  posX: number;
-  posY: number;
-  num: number;
-  answered: boolean;
-  constructor(x: number, y: number, num: number) {
-    this.mc = new createjs.Shape();
-    this.mc.graphics.beginFill('blue').drawRect(0, 0, 100, 100);
-    this.mc.setBounds(0, 0, 100, 100);
-    this.posX = x;
-    this.posY = y;
-    this.num = num;
-    this.answered = false;
-  }
-}
+// class Target {
+//   mc: createjs.Shape;
+//   posX: number;
+//   posY: number;
+//   num: number;
+//   answered: boolean;
+//   constructor(x: number, y: number, num: number) {
+//     this.mc = new createjs.Shape();
+//     this.mc.graphics.beginFill('blue').drawRect(0, 0, 100, 100);
+//     this.mc.setBounds(0, 0, 100, 100);
+//     this.posX = x;
+//     this.posY = y;
+//     this.num = num;
+//     this.answered = false;
+//   }
+// }
 
-let target = new Target(100, 200, 1);
-stage.addChild(target.mc);
-target.mc.x = target.posX;
-target.mc.y = target.posY;
+// let target = new Target(100, 200, 1);
+// stage.addChild(target.mc);
+// target.mc.x = target.posX;
+// target.mc.y = target.posY;
 
-let target2 = new Target(400, 200, 1);
-stage.addChild(target2.mc);
-target2.mc.x = target2.posX;
-target2.mc.y = target2.posY;
+// let target2 = new Target(400, 200, 1);
+// stage.addChild(target2.mc);
+// target2.mc.x = target2.posX;
+// target2.mc.y = target2.posY;
 
-type Answer = {
-  box: Target;
-  checkAnswerNumber: number;
-  isCorrect: boolean;
-};
+// type Answer = {
+//   box: Target;
+//   checkAnswerNumber: number;
+//   isCorrect: boolean;
+// };
 
-const _answerBox: Answer[] = [
-  { box: target, checkAnswerNumber: 1, isCorrect: false },
-  { box: target2, checkAnswerNumber: 2, isCorrect: false },
-];
+// const _answerBox: Answer[] = [
+//   { box: target, checkAnswerNumber: 1, isCorrect: false },
+//   { box: target2, checkAnswerNumber: 2, isCorrect: false },
+// ];
 
 // class draggEle {
 //   mc: createjs.Shape;
@@ -311,6 +311,44 @@ createjs.Ticker.addEventListener('tick', handleTick);
 function handleTick() {
   stage.update();
 }
+
+class Target {
+  mc: createjs.Shape;
+  posX: number;
+  posY: number;
+  num: number;
+  answered: boolean;
+  constructor(x: number, y: number, num: number) {
+    this.mc = new createjs.Shape();
+    this.mc.graphics.beginFill('blue').drawRect(0, 0, 100, 100);
+    this.mc.setBounds(0, 0, 100, 100);
+    this.posX = x;
+    this.posY = y;
+    this.num = num;
+    this.answered = false;
+  }
+}
+
+let target = new Target(100, 200, 1);
+stage.addChild(target.mc);
+target.mc.x = target.posX;
+target.mc.y = target.posY;
+
+let target2 = new Target(400, 200, 1);
+stage.addChild(target2.mc);
+target2.mc.x = target2.posX;
+target2.mc.y = target2.posY;
+
+type Answer = {
+  box: Target;
+  checkAnswerNumber: number;
+  isCorrect: boolean;
+};
+
+const _answerBox: Answer[] = [
+  { box: target, checkAnswerNumber: 1, isCorrect: false },
+  { box: target2, checkAnswerNumber: 2, isCorrect: false },
+];
 
 const answerBox1 = new createjs.Shape();
 answerBox1.graphics.beginFill('grey').drawRect(0, 0, 100, 150);
